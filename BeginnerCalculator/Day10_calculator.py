@@ -2,57 +2,67 @@ import os
 import time
 from Day10_calculatorlogo import logo
 
-def calculate(first, second, ops):
-    if ops == '+':
-        return first + second
-    elif ops == '-':
-        return first - second
-    elif ops == '*':
-        return first * second
-    elif ops == '/':
-        return first / second
-    else:
-        return None
+def add(n1, n2):
+    return n1 + n2
 
-operations = ['+', '-', '*', '/']
+def subtract(n1, n2):
+    return n1 - n2
+
+def multiply(n1, n2):
+    return n1 * n2
+
+def divide(n1, n2):
+    return n1 / n2
+
+operations = {
+    '+': add,
+    '-': subtract,
+    '*': multiply,
+    '/': divide
+}
 
 outer_flag =  True
 inner_flag = True
 
+
 while outer_flag:
     print(logo)
-    first_num = float(input("What's the first number?: "))
-    for char in operations:
-        print(char)
+    try:
+        first_num = float(input("What's the first number?: "))
+        for char in operations.keys():
+            print(char)
 
-    ops = input("Pick an operation: ")
-    second_num = float(input("What's the next number?: "))
+        ops = input("Pick an operation: ")
+        second_num = float(input("What's the next number?: "))
 
-    while inner_flag:
-        results = calculate(first_num, second_num, ops)
-        if results is not None:
-            print(f"{first_num} {ops} {second_num} = {results}")
-            user_choice = input(f"Type 'y' to continue calculating with {results}, or type 'n' to start new calculation: " )
-            if user_choice == 'y':
-                first_num = results
+        while inner_flag:
+            try:
+                results = operations[ops](first_num, second_num)
+                print(f"{first_num} {ops} {second_num} = {results}")
+                user_choice = input(f"Type 'y' to continue calculating with {results}, or type 'n' to start new calculation: " )
+                if user_choice == 'y':
+                    first_num = results
+                    ops = input("Pick an operation: ")
+                    second_num = float(input("What's the next number?: "))
+                elif user_choice == 'n':
+                    break
+            except KeyError:
+                print("Unknown operator selected. Please try again")
+                time.sleep(1)
+                for char in operations.keys():
+                    print(char)
                 ops = input("Pick an operation: ")
-                second_num = float(input("What's the next number?: "))
-            elif user_choice == 'n':
-                break
-        else: # results is None due to unknown operator
-            print("Unknown operator selected. Please try again")
-            time.sleep(2)
-            break
-    os.system('cls')
-            
-    
+                continue
+        os.system('cls')
+    except KeyError:
+        print("Unknown operator selected. Please try again")
+        time.sleep(1)
+        for char in operations.keys():
+            print(char)
+        ops = input("Pick an operation: ")
+        continue
 
 
-
-
-
-
-    
 # class Calculator:
 #     def __init__(self):
 #         self.first_num = None
