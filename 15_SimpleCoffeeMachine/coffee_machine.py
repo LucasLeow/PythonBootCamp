@@ -1,11 +1,5 @@
 from menu import *
 
-resources = {
-    'water': 300,
-    'milk': 200,
-    'coffee': 100
-}
-
 money = 0
 money_earned = 0
 
@@ -57,6 +51,10 @@ while machine_on:
                 print(f"Here is your {usr_choice} ☕. Enjoy! ")
         else:
             print(f"Sorry there is not enough {sufficient}.")
+    elif usr_choice == 'off':
+        machine_on = False
+
+print('Coffee Machine turned off.')
 
 
 
