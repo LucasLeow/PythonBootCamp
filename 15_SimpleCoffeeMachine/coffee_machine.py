@@ -3,11 +3,13 @@ from menu import *
 money = 0
 money_earned = 0
 
+
 def print_report():
     print(f"Water: {resources['water']}ml")
     print(f"Milk: {resources['milk']}ml")
     print(f"Coffee: {resources['coffee']}g")
     print(f"Money: ${money_earned}")
+
 
 def get_money():
     print('Please insert coins.')
@@ -25,9 +27,11 @@ def check_resource(coffee_type, cur_resource):
             return ingredient_type
     return True
 
+
 def deduct_resource(coffee_type, cur_resource):
     for ingredient_type, required_amt in MENU[coffee_type]['ingredients'].items():
         cur_resource[ingredient_type] -= required_amt
+
 
 machine_on = True
 while machine_on:
