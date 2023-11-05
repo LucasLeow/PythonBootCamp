@@ -18,5 +18,6 @@ def draw_spirograph(step):
         t.circle(RADIUS)
 
 draw_spirograph(5)
+
 scn = Screen()
 scn.exitonclick()
