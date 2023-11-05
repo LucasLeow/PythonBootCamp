@@ -14,3 +14,8 @@ while True:
     t.color(random_hex)
     t.setheading(random.choice(direction))
     t.forward(distance)
+
+    scn = Screen()
+    scn.exitonclick()
+
+
