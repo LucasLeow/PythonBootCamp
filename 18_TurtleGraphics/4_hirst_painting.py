@@ -7,17 +7,20 @@ MARCH_LENGTH = 50
 X_START = -500
 Y_START = -500
 
-colors = colorgram.extract('spot_colors.jpg', 10)
+colors = colorgram.extract('spot_colors.jpg', 50)
+
 
 def get_random_color(all_colors):
     random_color = random.choice(all_colors)
     return (random_color.rgb[0], random_color.rgb[1], random_color.rgb[2])
+
 
 def draw_hirst(rows, cols):
     t = Turtle()
     scn = Screen()
     scn.colormode(255)
     t.speed('fastest')
+    t.hideturtle()
 
     # Get to starting position
     t.penup()
@@ -36,9 +39,9 @@ def draw_hirst(rows, cols):
             t.forward(MARCH_LENGTH)
             t.pendown()
 
-
     scn.exitonclick()
 
-draw_hirst(10,10)
+if __name__ == '__main__':
+    draw_hirst(10,10)
 
 
