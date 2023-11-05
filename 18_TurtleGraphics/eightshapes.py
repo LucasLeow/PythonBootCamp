@@ -2,8 +2,7 @@ from turtle import Turtle, Screen
 import random
 
 # Interior angle = (n-2)*180
-sides = [3,4,5,6,7,8,9,10]
-colors = []
+sides = [i for i in range(3, 11)]
 
 r = lambda: random.randint(0,255)
 t = Turtle()
