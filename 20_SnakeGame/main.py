@@ -1,4 +1,4 @@
-from snake import SnakeGame
+from snake import Snake
 from turtle import Screen
 
 # Setup Screen
@@ -12,17 +12,15 @@ scn.bgcolor('black')
 scn.title('Snake Game')
 scn.tracer(n=0)  # n = 0 means turn off auto-update, call scn.update() at desired places
 
-game = SnakeGame()
+game = Snake()
 game.create_snake()
 
 game_is_on = True
 while game_is_on:
+    scn.listen()
+    scn.onkeypress(key="Left", fun=game.turn_left)
+    scn.onkeypress(key="Right", fun=game.turn_right)
     scn.update()
     game.move_snake(MOVE_DIST)
-
-
-
-# game.screen_setup()
-# game.start_snake()
 
 scn.exitonclick()
