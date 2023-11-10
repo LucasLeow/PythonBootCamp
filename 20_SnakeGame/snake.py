@@ -18,15 +18,24 @@ class Snake:
 
     def move_snake(self, dist):
         for i in range(len(self.snake) - 1, 0, -1):
+            self.snake[i].speed('fastest')
             self.snake[i].goto(self.snake[i-1].position())
-            time.sleep(0.1)
+            time.sleep(0.05)
         self.snake[0].forward(dist)
 
-    def turn_left(self):
-        cur_hdg = self.snake[0].heading()
-        self.snake[0].setheading(cur_hdg + 90)
+    def move_north(self):
+        if self.snake[0].heading() != 270:
+            self.snake[0].setheading(90)
 
-    def turn_right(self):
-        cur_hdg = self.snake[0].heading()
-        self.snake[0].setheading(cur_hdg - 90)
+    def move_south(self):
+        if self.snake[0].heading() != 90:
+            self.snake[0].setheading(270)
+
+    def move_east(self):
+        if self.snake[0].heading() != 180:
+            self.snake[0].setheading(0)
+
+    def move_west(self):
+        if self.snake[0].heading() != 0:
+            self.snake[0].setheading(180)
 
