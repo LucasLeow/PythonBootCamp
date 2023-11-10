@@ -1,38 +1,37 @@
 from turtle import Turtle, Screen
+import time
 
 class SnakeGame:
-    SCREEN_WIDTH=600
-    SCREEN_HEIGHT=600
     def __init__(self):
-        self.scn = Screen()
         self.snake = []
 
-    def screen_setup(self):
-        self.scn.setup(width=SnakeGame.SCREEN_WIDTH, height=SnakeGame.SCREEN_HEIGHT)
-        self.scn.bgcolor('black')
-        self.scn.title('Snake Game')
-
     def create_snake(self):
+        x_pos = 0
+        y_pos = 0
         for _ in range(3):
             t = Turtle(shape="square")
             t.color('white')
+            t.penup()
+            t.goto(x_pos, y_pos)
+            x_pos -= 20
             self.snake.append(t)
 
-    def start_snake(self):
-        x_pos = 0
-        y_pos = 0
-        self.create_snake()
-        for snake_part in self.snake:
-            snake_part.penup()
-            snake_part.speed(0)
-            snake_part.goto(x_pos, y_pos)
-            x_pos -= 20
 
+    def move_snake(self, dist):
+        # self.scn.listen()
+        #     self.scn.onkeypress(key="Left", fun=self.turn_left)
+        #     self.scn.onkeypress(key="Right", fun=self.turn_right)
+        #     self.scn.update() # move entire snake instead of by parts
+        for i in range(len(self.snake) - 1, 0, -1):
+            self.snake[i].goto(self.snake[i-1].position())
+            time.sleep(0.1)
+        self.snake[0].forward(dist)
 
-if __name__ == '__main__':
-    game = SnakeGame()
-    game.screen_setup()
-    game.start_snake()
+    def turn_left(self):d
+        cur_hdg = self.snake[0].heading()
+        self.snake[0].setheading(cur_hdg + 90)
 
+    def turn_right(self):
+        cur_hdg = self.snake[0].heading()
+        self.snake[0].setheading(cur_hdg - 90)
 
-    game.scn.exitonclick()
