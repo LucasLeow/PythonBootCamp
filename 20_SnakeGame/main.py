@@ -3,6 +3,7 @@ from snake import Snake
 from turtle import Screen
 import time
 from food import Food
+from scoreboard import ScoreBoard
 
 # == Constants ==
 SCREEN_WIDTH = 600
@@ -21,6 +22,7 @@ scn.tracer(n=0)  # n = 0 means turn off auto-update, call scn.update() at desire
 game = Snake()
 game.create_snake()
 food = Food(SCREEN_WIDTH, SCREEN_HEIGHT)
+score = ScoreBoard(SCREEN_HEIGHT)
 
 scn.listen()
 scn.onkeypress(key="Up", fun=game.move_north)
@@ -31,9 +33,11 @@ scn.onkeypress(key="Right", fun=game.move_east)
 # == Game Operation ==
 game_is_on = True
 while game_is_on:
+    score.display_score()
     scn.update()
     if game.snake[0].distance(food) < TOLERANCE:
         game.lengthen_snake()
+        score.increment_score()
         food.refresh()
     time.sleep(0.1)
     game.move_snake(MOVE_DIST)
