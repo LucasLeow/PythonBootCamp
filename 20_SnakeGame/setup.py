@@ -1,6 +1,6 @@
 from turtle import Turtle
 from art import logo
-from button import Button
+
 class Setup(Turtle):
     def __init__(self, screen_width, screen_height):
         super().__init__()

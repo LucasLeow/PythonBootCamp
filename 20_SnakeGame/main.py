@@ -112,7 +112,6 @@ def hard_button():
     button.onclick(snake_game_start)
     button.showturtle()
 
-
 if __name__ == '__main__':
     # == Setup Screen ==
     scn = Screen()
