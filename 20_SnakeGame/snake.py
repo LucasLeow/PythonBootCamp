@@ -5,22 +5,31 @@ class Snake:
     def __init__(self):
         self.snake = []
 
+    def create_part(self):
+        scaler = 1
+        t = Turtle(shape="square")
+        t.color('white')
+        t.shapesize(stretch_len=scaler, stretch_wid=scaler)
+        t.penup()
+        t.speed('fastest')
+        return t
+
     def create_snake(self):
         x_pos = 0
         y_pos = 0
         for _ in range(3):
-            t = Turtle(shape="square")
-            t.color('white')
-            t.penup()
+            t = self.create_part()
             t.goto(x_pos, y_pos)
             x_pos -= 20
             self.snake.append(t)
+
+    def lengthen_snake(self):
+        self.snake.append(self.create_part())
 
     def move_snake(self, dist):
         for i in range(len(self.snake) - 1, 0, -1):
             self.snake[i].speed('fastest')
             self.snake[i].goto(self.snake[i-1].position())
-            time.sleep(0.05)
         self.snake[0].forward(dist)
 
     def move_north(self):
