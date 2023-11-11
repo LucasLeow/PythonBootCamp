@@ -10,8 +10,8 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 MOVE_DIST = 20
 FOOD_TOLERANCE = 15
-TOP_AND_LEFT_TOLERANCE = 10
-BOTTOM_AND_RIGHT_TOLERANCE = 20
+TOP_AND_LEFT_TOLERANCE = 5
+BOTTOM_AND_RIGHT_TOLERANCE = 15
 
 # == Setup Screen ==
 scn = Screen()
@@ -42,6 +42,7 @@ while game_is_on:
         score.increment_score()
         food.refresh()
 
+    # Detect collision at border
     if (
             (game.snake[0].xcor() >= (SCREEN_WIDTH // 2) - BOTTOM_AND_RIGHT_TOLERANCE) or
             (game.snake[0].xcor() <= -(SCREEN_WIDTH // 2) + TOP_AND_LEFT_TOLERANCE) or
@@ -50,6 +51,14 @@ while game_is_on:
     ):
         score.display_game_over()
         game_is_on = False
+
+    # Detect collision with tail
+    for i in range(1, len(game.snake)):
+        if game.snake[0].distance(game.snake[i]) < 10:
+            score.display_game_over()
+            game_is_on = False
+
+
 
     time.sleep(0.1)
     game.move_snake(MOVE_DIST)
