@@ -9,7 +9,9 @@ from scoreboard import ScoreBoard
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 MOVE_DIST = 20
-TOLERANCE = 14
+FOOD_TOLERANCE = 15
+TOP_AND_LEFT_TOLERANCE = 10
+BOTTOM_AND_RIGHT_TOLERANCE = 20
 
 # == Setup Screen ==
 scn = Screen()
@@ -35,10 +37,20 @@ game_is_on = True
 while game_is_on:
     score.display_score()
     scn.update()
-    if game.snake[0].distance(food) < TOLERANCE:
+    if game.snake[0].distance(food) < FOOD_TOLERANCE:
         game.lengthen_snake()
         score.increment_score()
         food.refresh()
+
+    if (
+            (game.snake[0].xcor() >= (SCREEN_WIDTH // 2) - BOTTOM_AND_RIGHT_TOLERANCE) or
+            (game.snake[0].xcor() <= -(SCREEN_WIDTH // 2) + TOP_AND_LEFT_TOLERANCE) or
+            (game.snake[0].ycor() >= (SCREEN_HEIGHT // 2) - TOP_AND_LEFT_TOLERANCE) or
+            (game.snake[0].ycor() <= -(SCREEN_HEIGHT // 2) + BOTTOM_AND_RIGHT_TOLERANCE)
+    ):
+        score.display_game_over()
+        game_is_on = False
+
     time.sleep(0.1)
     game.move_snake(MOVE_DIST)
 
