@@ -1,6 +1,6 @@
-from turtle import Turtle
 import random
 import time
+from turtle import Turtle
 
 # blue = slowest, indigo = fastest
 COLORS = ['blue', 'green', 'yellow', 'orange', 'red', 'indigo']
@@ -15,6 +15,7 @@ DIFFICULTY = {
 START_MOVE_DIST = 5
 MOVE_INCREMENT = 30
 TOLERANCE = 50
+
 
 class CarManager:
     def __init__(self, scn_width, scn_height, level):
@@ -42,18 +43,11 @@ class CarManager:
             car.penup()
             car.speed('fastest')
 
-            y_cor = random.randint(-self.scn_height//2 + TOLERANCE, self.scn_height//2 - TOLERANCE)
-            car.goto(x=self.scn_width//2 + TOLERANCE, y=y_cor)
+            y_cor = random.randint(-self.scn_height // 2 + TOLERANCE, self.scn_height // 2 - TOLERANCE)
+            car.goto(x=self.scn_width // 2 + TOLERANCE, y=y_cor)
             self.cars.append(car)
 
     def move_cars(self):
         for car in self.cars:
             speed = DIFFICULTY[car.color()[0]]
             car.goto(x=car.xcor() - speed, y=car.ycor())
-
-
-
-
-
-
-

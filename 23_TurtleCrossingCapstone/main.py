@@ -1,9 +1,9 @@
+import time
 from turtle import Screen
-from turtle_piece import TurtlePiece
+
 from car_manager import CarManager
 from scoreboard import Scoreboard
-
-import time
+from turtle_piece import TurtlePiece
 
 # Constants
 SCREEN_WIDTH = 600
@@ -51,10 +51,5 @@ if __name__ == '__main__':
                 DEFAULT_TIMER -= 0.002
             if DEFAULT_TIMER < 0.04:
                 DEFAULT_TIMER = 0.04
-
-
-
-
-
 
     scn.exitonclick()
