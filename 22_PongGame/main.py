@@ -1,5 +1,7 @@
 from turtle import Screen
 from paddle import Paddle
+from ball import Ball
+import time
 
 # Constants
 SCREEN_WIDTH = 800
@@ -15,7 +17,7 @@ if __name__ == '__main__':
 
     r_paddle = Paddle(350, 0)
     l_paddle = Paddle(-350, 0)
-
+    b = Ball()
 
     scn.listen()
     scn.onkeypress(key="Up", fun=r_paddle.move_paddle_up)
@@ -26,5 +28,8 @@ if __name__ == '__main__':
     game_is_on = True
     while game_is_on:
         scn.update()
+        b.move()
+        time.sleep(0.1)
+
 
     scn.exitonclick()
