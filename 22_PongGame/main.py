@@ -77,7 +77,7 @@ if __name__ == '__main__':
             score.update_scoreboard()
             scn.update()
             # Put timer here
-            time.sleep(1)
+            time.sleep(0.5)
 
         # Left paddle miss
         if (

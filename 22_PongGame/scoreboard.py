@@ -19,10 +19,10 @@ class ScoreBoard(Turtle):
 
     def update_scoreboard(self):
         self.clear()
-        self.goto(-(SCORE_FONT[1] + 50), y=self.scn_height // 2 - TOP_GAP)
+        self.goto(x=-(SCORE_FONT[1] + 50), y=self.scn_height // 2 - TOP_GAP)
         self.write(self.l_score, align=ALIGN, font=SCORE_FONT)
 
-        self.goto((SCORE_FONT[1] + 50), y=self.scn_height // 2 - TOP_GAP)
+        self.goto(x=(SCORE_FONT[1] + 50), y=self.scn_height // 2 - TOP_GAP)
         self.write(self.r_score, align=ALIGN, font=SCORE_FONT)
 
 
