@@ -41,18 +41,33 @@ if __name__ == '__main__':
         # Detect collision with walls
         if (
             b.ycor() >= (SCREEN_HEIGHT // 2) - WALL_TOLERANCE or
-                b.ycor() <= -(SCREEN_HEIGHT // 2) + WALL_TOLERANCE
+            b.ycor() <= -(SCREEN_HEIGHT // 2) + WALL_TOLERANCE
         ):
             b.wall_bounce()
 
         # Detect collision with paddle
         if (
-                b.distance(r_paddle) < 50 and b.xcor() > RIGHT_PADDLE_POS - PADDLE_TOLERANCE or
-                b.distance(l_paddle) < 50 and b.xcor() < LEFT_PADDLE_POS + PADDLE_TOLERANCE
+            b.distance(r_paddle) <= 50 and b.xcor() > RIGHT_PADDLE_POS - PADDLE_TOLERANCE or
+            b.distance(l_paddle) <= 50 and b.xcor() < LEFT_PADDLE_POS + PADDLE_TOLERANCE
         ):
             b.paddle_bounce()
 
-        time.sleep(0.1)
+        if (
+            b.distance(r_paddle) > 50 and b.xcor() > RIGHT_PADDLE_POS + WALL_TOLERANCE
+        ):
+            b.reset_ball()
+            scn.update()
+            # Put timer here
+            time.sleep(1)
+        if (
+            b.distance(l_paddle) > 50 and b.xcor() < LEFT_PADDLE_POS - WALL_TOLERANCE
+        ):
+            b.reset_ball()
+            scn.update()
+            # Put timer here
+            time.sleep(1)
+
+        time.sleep(0.05)
 
 
     scn.exitonclick()

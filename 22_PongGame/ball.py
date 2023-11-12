@@ -1,4 +1,5 @@
 from turtle import Turtle
+import time
 
 #Constants
 BALL_MOVE_DIST = 10
@@ -22,6 +23,11 @@ class Ball(Turtle):
         self.y_move *= -1
 
     def paddle_bounce(self):
+        self.x_move *= -1
+
+    def reset_ball(self):
+        self.home()
+        self.y_move *= -1
         self.x_move *= -1
 
 
