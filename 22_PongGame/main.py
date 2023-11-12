@@ -13,13 +13,15 @@ if __name__ == '__main__':
     scn.title('Pong')
     scn.tracer(n=0)
 
-    game = Paddle()
-    game.setup_paddles()
+    r_paddle = Paddle(350, 0)
+    l_paddle = Paddle(-350, 0)
 
 
     scn.listen()
-    scn.onkeypress(key="Up", fun=game.right_paddle_up)
-    scn.onkeypress(key="Down", fun=game.right_paddle_down)
+    scn.onkeypress(key="Up", fun=r_paddle.move_paddle_up)
+    scn.onkeypress(key="Down", fun=r_paddle.move_paddle_down)
+    scn.onkeypress(key="w", fun=l_paddle.move_paddle_up)
+    scn.onkeypress(key="s", fun=l_paddle.move_paddle_down)
 
     game_is_on = True
     while game_is_on:
