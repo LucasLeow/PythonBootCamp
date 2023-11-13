@@ -60,14 +60,18 @@ def snake_game_start(x, y):
                 (game.snake[0].ycor() >= (SCREEN_HEIGHT // 2) - TOP_AND_LEFT_TOLERANCE) or
                 (game.snake[0].ycor() <= -(SCREEN_HEIGHT // 2) + BOTTOM_AND_RIGHT_TOLERANCE)
         ):
-            score.display_game_over()
-            game_is_on = False
+            score.reset_scoreboard()
+            game.reset_snake()
+            # score.display_game_over()
+            # game_is_on = False
 
         # Detect collision with tail
         for i in range(1, len(game.snake)):
             if game.snake[0].distance(game.snake[i]) < 10:
-                score.display_game_over()
-                game_is_on = False
+                score.reset_scoreboard()
+                game.reset_snake()
+                # score.display_game_over()
+                # game_is_on = False
 
         time.sleep(timer)
         game.move_snake(MOVE_DIST)
