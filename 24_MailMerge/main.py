@@ -1,6 +1,6 @@
 # Paths
-letter_path = 'Input/Letters/starting_letter.txt'
 names_path = 'Input/Names/invited_names.txt'
+letter_path = 'Input/Letters/starting_letter.txt'
 output_path = 'Output/ReadyToSend/'
 
 with open(names_path, 'r') as name_file:
