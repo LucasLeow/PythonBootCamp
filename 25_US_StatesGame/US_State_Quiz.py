@@ -32,6 +32,9 @@ user_ans = scn.textinput(title='Guess the State',
 
 while len(states) != 0:
 
+    if user_ans == 'exit':
+        break
+
     if user_ans in states:
         correct_count += 1
         states.remove(user_ans)
@@ -47,13 +50,12 @@ while len(states) != 0:
                                  prompt="Enter another state name").lower()
 
 
-scn.exitonclick()
+frame = {
+    'states_to_learn': states
+}
 
-
-
-
-
-
+new_df = pd.DataFrame(frame)
+new_df.to_csv('states_to_learn.csv')
 
 
 
