@@ -1,4 +1,5 @@
 from tkinter import *
+
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
 RED = "#e7305b"
@@ -10,12 +11,13 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
 sets = 0
-timer = None # must be global var so can pass to reset fn
+timer = None  # must be global var so can pass to reset fn
 
 reps_chk_mark = "✔"
 sets_chk_mark = "✨"
 
 chk_marks = ""
+
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
@@ -25,10 +27,11 @@ def reset_timer():
     sets = 0
     chk_marks = ""
 
-    window.after_cancel(timer) # Stop Timer
-    canvas.itemconfig(timer_text, text="00:00") # Reset timer text
-    timer_label.config(text='Timer', fg=GREEN) # Reset timer title
-    chk_mark_label.config(text=chk_marks) # Clear check marks
+    window.after_cancel(timer)  # Stop Timer
+    canvas.itemconfig(timer_text, text="00:00")  # Reset timer text
+    timer_label.config(text='Timer', fg=GREEN)  # Reset timer title
+    chk_mark_label.config(text=chk_marks)  # Clear check marks
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
@@ -54,7 +57,8 @@ def start_timer():
         timer_label.config(text='Work', fg=GREEN)
         count_down(seconds=work_time)
 
-# ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
+
+# ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(seconds):  # recursive call to countdown
     global reps, sets, chk_marks, timer
     mins, secs = divmod(seconds, 60)  # returns quotient (mins) & remainder (secs)
@@ -73,19 +77,20 @@ def count_down(seconds):  # recursive call to countdown
                 chk_marks += reps_chk_mark
                 chk_mark_label.config(text=chk_marks)
         start_timer()
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Pomodoro')
-window.config(padx=100, pady=50, bg=YELLOW) # padding for img
+window.config(padx=100, pady=50, bg=YELLOW)  # padding for img
 
 #  == Canvas setup (Tomato Image) ==
-canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0) # set close to actual img resolution
+canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)  # set close to actual img resolution
 
 tomato_bg = PhotoImage(file='tomato.png')
-canvas.create_image((100, 112), image=tomato_bg) # ~ half of img resolution
+canvas.create_image((100, 112), image=tomato_bg)  # ~ half of img resolution
 timer_text = canvas.create_text((100, 130), text='00:00', fill='white', font=(FONT_NAME, 35, 'bold'))
 canvas.grid(column=1, row=1)
-
 
 # == Timer Text ==
 timer_label = Label(text='Timer', fg=GREEN, bg=YELLOW, font=(FONT_NAME, 20, 'bold'))
