@@ -10,13 +10,25 @@ SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
 sets = 0
+timer = None # must be global var so can pass to reset fn
 
 reps_chk_mark = "✔"
 sets_chk_mark = "✨"
 
 chk_marks = ""
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+# ---------------------------- TIMER RESET ------------------------------- #
+def reset_timer():
+    # clear checkmarks, stop & reset timer, change title
+    global reps, sets, timer, chk_marks
+    reps = 0
+    sets = 0
+    chk_marks = ""
+
+    window.after_cancel(timer) # Stop Timer
+    canvas.itemconfig(timer_text, text="00:00") # Reset timer text
+    timer_label.config(text='Timer', fg=GREEN) # Reset timer title
+    chk_mark_label.config(text=chk_marks) # Clear check marks
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
@@ -44,12 +56,12 @@ def start_timer():
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(seconds):  # recursive call to countdown
-    global reps, sets, chk_marks
+    global reps, sets, chk_marks, timer
     mins, secs = divmod(seconds, 60)  # returns quotient (mins) & remainder (secs)
     text = '{:02d}:{:02d}'.format(mins, secs)
     canvas.itemconfig(timer_text, text=text)  # Update timer_text
     if seconds > 0:
-        window.after(1000, count_down, seconds - 1)  # .after() calls function after some time
+        timer = window.after(1000, count_down, seconds - 1)  # .after() calls function after some time
         # cannot use while loop because interferes with canvas mainloop()
     else:
         if reps % 2 == 0:
@@ -80,9 +92,6 @@ timer_label = Label(text='Timer', fg=GREEN, bg=YELLOW, font=(FONT_NAME, 20, 'bol
 timer_label.grid(column=1, row=0)
 
 # == Buttons ==
-def reset_timer():
-    print('stop clicked')
-
 start_btn = Button(text='Start', command=start_timer)
 reset_btn = Button(text='Reset', command=reset_timer)
 
