@@ -1,9 +1,0 @@
-test1 | @yahoo.com.sg | test1
-test2 | @yahoo.com.sg | test1
-test1 | @yahoo.com.sg | test1
-test2 | @yahoo.com.sg | test3
- | @yahoo.com.sg | 
- | @yahoo.com.sg | 
-test | @yahoo.com.sgte | test
-test | @yahoo.com.sgasd | testasd
-asd | @yahoo.com.sgasd | asd
