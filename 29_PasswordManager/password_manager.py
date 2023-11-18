@@ -3,7 +3,8 @@ from tkinter import *
 # ---------------------------- CONSTANTS ------------------------------- #
 FONT = ('Arial', 12, 'normal')
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
-
+def generate_password():
+    pass
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add():
     pass
@@ -24,24 +25,27 @@ canvas.grid(column=1, row=0)
 website_label = Label(text='Website:', font=FONT)
 website_label.grid(column=0, row=1)
 
-website_entry_box = Entry(width=35)
+website_entry_box = Entry(width=45)
 website_entry_box.grid(column=1, row=1, columnspan=2)
 
 # == Email/Username Label & Input ==
 e_u_label = Label(text='Email/Username: ', font=FONT)
 e_u_label.grid(column=0, row=2)
 
-e_u_entry_box = Entry(width=35)
+e_u_entry_box = Entry(width=45)
 e_u_entry_box.grid(column=1, row=2, columnspan=2)
 
 # == Password Label & Input ==
 pw_label = Label(text='Password: ', font=FONT)
 pw_label.grid(column=0, row=3)
 
-pw_entry_box = Entry(width=35)
-pw_entry_box.grid(column=1, row=3, columnspan=2)
+pw_entry_box = Entry(width=27)
+pw_entry_box.grid(column=1, row=3)
+
+pw_btn = Button(text='Generate Password', command=generate_password, bg='white')
+pw_btn.grid(column=2, row=3)
 
 # == Add Button ==
-add_btn = Button(text='Add', width=35, command=add, bg='white', highlightthickness=0)
+add_btn = Button(text='Add', width=40, command=add, bg='white', highlightthickness=0)
 add_btn.grid(column=1, row=4, columnspan=2)
 window.mainloop()
