@@ -1,5 +1,5 @@
 from tkinter import *
-
+from tkinter import messagebox  # messagebox not a class, not imported in *
 # ---------------------------- CONSTANTS ------------------------------- #
 FONT = ('Arial', 12, 'normal')
 output_path = 'data.txt'
@@ -12,13 +12,34 @@ def save():
     email_text = e_u_entry_box.get()
     pw_text = pw_entry_box.get()
 
+    if len(website_text) == 0:
+        messagebox.showinfo(title='error', message='Website cannot be empty')
+        return
+
+    if len(pw_text) == 0:
+        messagebox.showinfo(title='error', message='Password cannot be empty')
+        return
+
     file_text = f"{website_text} | {email_text} | {pw_text}\n"
 
-    website_entry_box.delete(0, END)
-    pw_entry_box.delete(0, END)
+    is_ok = messagebox.askokcancel(title=website_text, message=f"These are the details entered: \n"
+                                                               f"Website: {website_text}\n"
+                                                               f"Email: {email_text}\n"
+                                                               f"Password: {pw_text}\n"
+                                                               f"Is it ok to save?")
 
-    with open(output_path, 'a') as d_file:
-        d_file.writelines(file_text)
+    if is_ok:
+        website_entry_box.delete(0, END)
+        pw_entry_box.delete(0, END)
+
+        e_u_entry_box.delete(0, END)  # reset email field in case it was modified
+        e_u_entry_box.insert(0, string='@yahoo.com.sg')
+
+        with open(output_path, 'a') as d_file:
+            d_file.writelines(file_text)
+            messagebox.showinfo(title='success', message='Details saved successfully')
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Password Manager')
