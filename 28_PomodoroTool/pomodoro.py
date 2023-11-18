@@ -8,6 +8,7 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
+reps = 0
 
 chk_mark = "✔"
 
@@ -15,8 +16,26 @@ chk_mark = "✔"
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 def start_timer():
-    count_down(seconds=(WORK_MIN * 60))
+    global reps
+    reps += 1
 
+    # work_time = WORK_MIN * 60
+    # short_break_time = SHORT_BREAK_MIN * 60
+    # long_break_time = LONG_BREAK_MIN * 60
+
+    work_time = 3
+    short_break_time = 2
+    long_break_time = 6
+
+    if reps % 8 == 0:
+        timer_label.config(text='Long Break', fg=RED)
+        count_down(seconds=long_break_time)
+    elif reps % 2 == 0:
+        timer_label.config(text='Short Break', fg=PINK)
+        count_down(seconds=short_break_time)
+    else:
+        timer_label.config(text='Work', fg=GREEN)
+        count_down(seconds=work_time)
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
 def count_down(seconds):  # recursive call to countdown
@@ -26,6 +45,8 @@ def count_down(seconds):  # recursive call to countdown
     if seconds > 0:
         window.after(1000, count_down, seconds - 1)  # .after() calls function after some time
         # cannot use while loop because interferes with canvas mainloop()
+    else:
+        start_timer()
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Pomodoro')
