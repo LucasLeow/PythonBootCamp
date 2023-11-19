@@ -1,10 +1,11 @@
+import json
 import random
 from tkinter import *
 from tkinter import messagebox  # messagebox not a class, not imported in *
 
 # ---------------------------- CONSTANTS ------------------------------- #
 FONT = ('Arial', 12, 'normal')
-output_path = 'data.txt'
+output_path = 'data.json'
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     pw_entry_box.delete(0, END)
@@ -42,7 +43,13 @@ def save():
         messagebox.showinfo(title='error', message='Password cannot be empty')
         return
 
-    file_text = f"{website_text} | {email_text} | {pw_text}\n"
+    # file_text = f"{website_text} | {email_text} | {pw_text}\n"
+    json_data = {
+        website_text: {
+            'email': email_text,
+            'password': pw_text
+        }
+    }
 
     is_ok = messagebox.askokcancel(title=website_text, message=f"These are the details entered: \n"
                                                                f"Website: {website_text}\n"
@@ -57,8 +64,12 @@ def save():
         e_u_entry_box.delete(0, END)  # reset email field in case it was modified
         e_u_entry_box.insert(0, string='@yahoo.com.sg')
 
-        with open(output_path, 'a') as d_file:
-            d_file.writelines(file_text)
+        with open(output_path, 'r') as r_file:
+            exist_data = json.load(r_file)
+            exist_data.update(json_data)
+
+        with open(output_path, 'w') as w_file:
+            json.dump(exist_data, w_file, indent=4)
             messagebox.showinfo(title='success', message='Details saved successfully')
 
 
