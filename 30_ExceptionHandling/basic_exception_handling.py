@@ -16,3 +16,4 @@ else:
 
 finally:
     print('Program ending')
+    raise TypeError('This is self raised error') # to raise exception
