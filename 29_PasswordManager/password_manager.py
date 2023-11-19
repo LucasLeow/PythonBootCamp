@@ -6,6 +6,8 @@ from tkinter import messagebox  # messagebox not a class, not imported in *
 # ---------------------------- CONSTANTS ------------------------------- #
 FONT = ('Arial', 12, 'normal')
 output_path = 'data.json'
+
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     pw_entry_box.delete(0, END)
@@ -28,6 +30,7 @@ def generate_password():
     password = "".join(password_list)
 
     pw_entry_box.insert(0, password)
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
@@ -84,9 +87,29 @@ def save():
         finally:
             messagebox.showinfo(title='success', message='Details saved successfully')
 
+# ---------------------------- Search Details ------------------------------- #
+def search():
+    website_text = website_entry_box.get()
+    if len(website_text) == 0:
+        messagebox.showinfo(title='error', message='Website cannot be empty')
+        return
 
+    try:
+        with open(output_path, 'r') as r_file:
+            exist_data = json.load(r_file)
+            messagebox.showinfo(title=website_text,
+                                message=f"Email: {exist_data[website_text]['email']} \n"
+                                        f"Password: {exist_data[website_text]['password']}")
 
+    except FileNotFoundError:
+        messagebox.showinfo(title='error', message='No Data File Found')
+        return
+        # with open(output_path, 'w') as w_file: # create JSON file if not exist
+        #     pass
 
+    except KeyError:
+        messagebox.showinfo(title='error', message='No details for website found')
+        return
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -105,9 +128,12 @@ canvas.grid(column=1, row=0)
 website_label = Label(text='Website:', font=FONT)
 website_label.grid(column=0, row=1)
 
-website_entry_box = Entry(width=45)
+website_entry_box = Entry(width=27)
 website_entry_box.focus()
-website_entry_box.grid(column=1, row=1, columnspan=2)
+website_entry_box.grid(column=1, row=1)
+
+search_btn = Button(text='Search', command=search, bg='white', width=15)
+search_btn.grid(column=2, row=1)
 
 # == Email/Username Label & Input ==
 e_u_label = Label(text='Email/Username: ', font=FONT)
