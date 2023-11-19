@@ -64,13 +64,28 @@ def save():
         e_u_entry_box.delete(0, END)  # reset email field in case it was modified
         e_u_entry_box.insert(0, string='@yahoo.com.sg')
 
-        with open(output_path, 'r') as r_file:
-            exist_data = json.load(r_file)
-            exist_data.update(json_data)
+        try:
+            with open(output_path, 'r') as r_file:
+                exist_data = json.load(r_file)
+                exist_data.update(json_data)
 
-        with open(output_path, 'w') as w_file:
-            json.dump(exist_data, w_file, indent=4)
+        except FileNotFoundError:
+            with open(output_path, 'w') as w_file:
+                json.dump(json_data, w_file, indent=4)
+
+        except json.decoder.JSONDecodeError:  # json file empty initially
+            with open(output_path, 'w') as w_file:
+                json.dump(json_data, w_file, indent=4)
+
+        else:
+            with open(output_path, 'w') as w_file:
+                json.dump(exist_data, w_file, indent=4)
+
+        finally:
             messagebox.showinfo(title='success', message='Details saved successfully')
+
+
+
 
 
 # ---------------------------- UI SETUP ------------------------------- #

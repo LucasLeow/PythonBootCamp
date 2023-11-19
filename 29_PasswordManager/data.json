@@ -1,10 +1,10 @@
 {
-    "test": {
+    "test1": {
         "email": "@yahoo.com.sg",
-        "password": "test"
+        "password": "test1"
     },
-    "test3": {
+    "test2": {
         "email": "@yahoo.com.sg",
-        "password": "test23"
+        "password": "test2"
     }
 }
