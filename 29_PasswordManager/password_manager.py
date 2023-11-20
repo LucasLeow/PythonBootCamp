@@ -87,6 +87,7 @@ def save():
         finally:
             messagebox.showinfo(title='success', message='Details saved successfully')
 
+
 # ---------------------------- Search Details ------------------------------- #
 def search():
     website_text = website_entry_box.get()
@@ -110,6 +111,7 @@ def search():
     except KeyError:
         messagebox.showinfo(title='error', message='No details for website found')
         return
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
