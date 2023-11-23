@@ -1,16 +1,19 @@
 import datetime as dt
-from creds import *
-import smtplib
 import random
+import smtplib
+
+from creds import *
 
 # Read all quotes
 with open('quotes.txt') as file:
     all_lines = [row.strip('\n') for row in file.readlines()]
     all_lines = [row.split('-') for row in all_lines]
 
+
 def get_quote():
     random_quote = random.choice(all_lines)
     return random_quote
+
 
 # == Email Mechanism ==
 day_of_week = dt.datetime.today().weekday()
@@ -28,7 +31,3 @@ if day_of_week == 3:
             msg=f'Subject: Motivation Monday \n\n {quote} \n\n - {author}'
         )
     print('email sent')
-
-
-
-
