@@ -1,5 +1,6 @@
-import requests
 import datetime as dt
+
+import requests
 
 # Sg Lat Long
 parameters = {
@@ -16,5 +17,4 @@ sunset = data['results']['sunset']
 
 time_now = dt.datetime.now()
 print(sunrise)
-print(time_now)
-# strftime("%I:%M:%S %p")
+print(time_now.strftime("%I:%M:%S %p"))
