@@ -3,11 +3,13 @@ from tkinter import *
 import requests
 
 res = requests.get(url='https://api.kanye.rest')
+res.raise_for_status()
 initial_quote = res.json()['quote']
 
 
 def get_quote():
     res = requests.get(url='https://api.kanye.rest')
+    res.raise_for_status()
     quote = res.json()['quote']
     canvas.itemconfig(quote_text, text=quote)
 
