@@ -46,24 +46,30 @@ class QuizInterface:
         self.window.mainloop()
 
     def get_next_qns(self):
+        self.canvas.config(bg='white')
         if self.quizbrain.still_has_questions():
-            self.update_score()
+            self.score_text.config(text=f'Score: {self.quizbrain.score}')
             q_text = self.quizbrain.next_question()
             self.canvas.itemconfig(self.qns_text, text=q_text)
         else:
             self.canvas.itemconfig(self.qns_text, text="END OF QUIZ")
+            self.tick_btn.config(state='disabled')
+            self.x_btn.config(state='disabled')
 
     def true_btn_clicked(self):
         if self.quizbrain.still_has_questions():
-            self.quizbrain.check_answer('True')
-            self.get_next_qns()
+            is_right = self.quizbrain.check_answer('True')
+            self.give_feedback(is_right)
 
     def false_btn_clicked(self):
         if self.quizbrain.still_has_questions():
-            self.quizbrain.check_answer('False')
-            self.get_next_qns()
+            is_right = self.quizbrain.check_answer('False')
+            self.give_feedback(is_right)
 
-    def update_score(self):
-        current_score = self.quizbrain.get_score()
-        self.score_text.config(text=f'Score: {current_score}')
+    def give_feedback(self, is_right):
+        if is_right:
+            self.canvas.configure(bg='#76EE00')
+        else:
+            self.canvas.configure(bg='coral1')
+        self.window.after(1000, self.get_next_qns)
 
