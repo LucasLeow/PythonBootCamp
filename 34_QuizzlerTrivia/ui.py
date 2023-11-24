@@ -10,6 +10,7 @@ PADDING = 20
 class QuizInterface:
     def __init__(self, quizbrain: QuizBrain):
         self.quizbrain = quizbrain
+        self.usr_ans = None
         self.window = Tk()
         self.window.title('Quizzler')
         self.window.config(padx=PADDING, pady=PADDING, bg=THEME_COLOR)
@@ -30,15 +31,14 @@ class QuizInterface:
         tick_img = PhotoImage(file='images/true.png') # 100 x 97
         x_img = PhotoImage(file='images/false.png') # 100 x 97
 
-        self.tick_btn = Button(image=tick_img, highlightthickness=0)
-        self.x_btn = Button(image=x_img, highlightthickness=0)
+        self.tick_btn = Button(image=tick_img, highlightthickness=0, command=self.true_btn_clicked)
+        self.x_btn = Button(image=x_img, highlightthickness=0, command=self.false_btn_clicked)
 
         self.tick_btn.grid(row=2, column=0, padx=PADDING, pady=PADDING)
         self.x_btn.grid(row=2, column=1, padx=PADDING, pady=PADDING)
 
         # Score
-        self.score = 0
-        self.score_text = Label(text=f'Score: {self.score}', bg=THEME_COLOR, fg='white', font=('Arial', 12, 'normal'))
+        self.score_text = Label(text=f'Score: 0', bg=THEME_COLOR, fg='white', font=('Arial', 12, 'normal'))
         self.score_text.grid(row=0, column=1, padx=PADDING, pady=PADDING)
 
         self.get_next_qns()
@@ -46,5 +46,24 @@ class QuizInterface:
         self.window.mainloop()
 
     def get_next_qns(self):
-        q_text = self.quizbrain.next_question()
-        self.canvas.itemconfig(self.qns_text, text=q_text)
+        if self.quizbrain.still_has_questions():
+            self.update_score()
+            q_text = self.quizbrain.next_question()
+            self.canvas.itemconfig(self.qns_text, text=q_text)
+        else:
+            self.canvas.itemconfig(self.qns_text, text="END OF QUIZ")
+
+    def true_btn_clicked(self):
+        if self.quizbrain.still_has_questions():
+            self.quizbrain.check_answer('True')
+            self.get_next_qns()
+
+    def false_btn_clicked(self):
+        if self.quizbrain.still_has_questions():
+            self.quizbrain.check_answer('False')
+            self.get_next_qns()
+
+    def update_score(self):
+        current_score = self.quizbrain.get_score()
+        self.score_text.config(text=f'Score: {current_score}')
+

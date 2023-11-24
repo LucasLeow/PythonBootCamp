@@ -18,7 +18,6 @@ class QuizBrain:
         q_text = html.unescape(self.current_question.text)
         return f"Q.{self.question_number}: {q_text} (True/False): "
 
-
     def check_answer(self, user_answer):
         correct_answer = self.current_question.answer
         if user_answer.lower() == correct_answer.lower():
@@ -29,3 +28,6 @@ class QuizBrain:
 
         print(f"Your current score is: {self.score}/{self.question_number}")
         print("\n")
+
+    def get_score(self):
+        return self.score
