@@ -1,5 +1,6 @@
 import os
 import requests
+from flight_data import FlightData
 
 tequila_api_key = os.environ['tequila_api_key']
 class FlightSearch:
@@ -10,6 +11,7 @@ class FlightSearch:
         self.header = {
             "apikey": tequila_api_key
         }
+        self.city_price_pair = {}
     def get_cities_iata(self):
         search_endpoint = self.endpoint + 'locations/query'
         for city in self.cities_to_search:
@@ -21,8 +23,30 @@ class FlightSearch:
                 params=search_params,
                 headers=self.header
             )
-
             city['iataCode'] = res.json()["locations"][0]["code"]
-
         return self.cities_to_search
 
+    def search_for_deals(self, sheet_data: list, fd: FlightData):
+        url = self.endpoint + 'v2/search'
+
+        for city_data in sheet_data:
+            search_params = {
+                "fly_from": fd.fly_from,
+                "fly_to": city_data['iataCode'],
+                "date_from": fd.date_from,
+                "date_to": fd.date_to,
+                "nights_in_dst_from": fd.nights_in_dst_from,
+                "nights_in_dst_to": fd.nights_in_dst_to,
+                "curr": fd.curr,
+            }
+
+            res = requests.get(
+                url=url,
+                params=search_params,
+                headers=self.header
+            )
+
+            flight_price_data = res.json()["data"][0]
+            self.city_price_pair[city_data['city']] = flight_price_data['price']
+            print(f"processed {city_data['city']} lowest price")
+        return self.city_price_pair
