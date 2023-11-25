@@ -15,7 +15,6 @@ class DataManager:
     def get_sheet_data(self):
         res = requests.get(url=self.endpoint, headers=self.header)
         self.data = res.json()['prices']
-        print(self.data)
         return self.data
 
     def update_iata_code(self, updated_cities: list):
