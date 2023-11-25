@@ -1,8 +1,10 @@
 import requests
+from datetime import datetime
 from creds import user_create_params, headers
 
 pixela_endpoint = 'https://pixe.la/v1/users'
 graph_creation_endpoint = f"{pixela_endpoint}/{user_create_params['username']}/graphs"
+graph_post_endpoint = f"{pixela_endpoint}/{user_create_params['username']}/graphs/graph1"
 
 # == 1 create new user account ==
 
@@ -35,3 +37,17 @@ graph access: https://pixe.la/v1/users/lucasl96/graphs/graph1.html
 # )
 
 # print(res.text)
+
+# == 3 Posting value to graph ==
+# today = datetime.today().strftime('%Y%m%d')
+
+# graph_post_config = {
+#     "date": today,
+#     "quantity": "5"
+# }
+
+# res = requests.post(
+#     url=graph_post_endpoint,
+#     json=graph_post_config,
+#     headers=headers
+# )
