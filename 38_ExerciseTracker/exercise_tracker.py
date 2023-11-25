@@ -6,6 +6,7 @@ from datetime import datetime
 nutri_id = os.environ['nutri_id']
 nutri_api_key = os.environ['nutri_api_key']
 sheety_api_key = os.environ['sheety_api_key']
+sheety_token = os.environ['sheety_token']
 
 nutri_exercise_endpoint = 'https://trackapi.nutritionix.com/v2/natural/exercise'
 sheety_endpoint = f'https://api.sheety.co/{sheety_api_key}/lucasWorkouts/workouts'
@@ -55,7 +56,8 @@ sheety_params = {
 }
 
 sheety_headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {sheety_token}"
 }
 
 sheety_res = requests.post(
