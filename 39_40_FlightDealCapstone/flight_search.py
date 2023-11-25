@@ -11,6 +11,7 @@ class FlightSearch:
             "apikey": tequila_api_key
         }
         self.lowest_price_info = []
+
     def get_cities_iata(self, cities_to_search):
         search_endpoint = self.endpoint + 'locations/query'
         for city in cities_to_search:
