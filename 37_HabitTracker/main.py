@@ -51,3 +51,20 @@ graph access: https://pixe.la/v1/users/lucasl96/graphs/graph1.html
 #     json=graph_post_config,
 #     headers=headers
 # )
+
+
+# Updating graph pixel
+desired_date = datetime(year=2023, month=11, day=25).strftime('%Y%m%d')
+
+graph_put_endpoint = f"{pixela_endpoint}/{user_create_params['username']}/graphs/graph1/{desired_date}"
+graph_put_config = {
+    "quantity": "2"
+}
+
+res = requests.put(
+    url=graph_put_endpoint,
+    json=graph_put_config,
+    headers=headers
+)
+
+print(res.text)
