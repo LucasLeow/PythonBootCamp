@@ -4,17 +4,16 @@ from flight_data import FlightData
 
 tequila_api_key = os.environ['tequila_api_key']
 class FlightSearch:
-    def __init__(self, iata_cities):
-        self.cities_to_search = iata_cities
+    def __init__(self):
         self.city_iata_pair = {}
         self.endpoint = 'https://api.tequila.kiwi.com/'
         self.header = {
             "apikey": tequila_api_key
         }
         self.lowest_price_info = []
-    def get_cities_iata(self):
+    def get_cities_iata(self, cities_to_search):
         search_endpoint = self.endpoint + 'locations/query'
-        for city in self.cities_to_search:
+        for city in cities_to_search:
             search_params = {
                 "term": city['city']
             }
@@ -24,7 +23,7 @@ class FlightSearch:
                 headers=self.header
             )
             city['iataCode'] = res.json()["locations"][0]["code"]
-        return self.cities_to_search
+        return cities_to_search
 
     def search_for_deals(self, sheet_data: list, fd: FlightData):
         url = self.endpoint + 'v2/search'
