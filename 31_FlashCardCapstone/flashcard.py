@@ -82,3 +82,5 @@ right_btn.grid(column=1, row=1)
 flip_timer = window.after(3000, flip_card, random_pair)
 
 window.mainloop()
+
+
