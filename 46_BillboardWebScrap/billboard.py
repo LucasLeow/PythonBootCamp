@@ -31,6 +31,7 @@ billboard_hot_100_html = res.text
 
 soup = BeautifulSoup(billboard_hot_100_html, 'html.parser')
 top_100_songs = []
+top_10_songs_video_id = []
 
 # Web Scraping  ==================================================================
 song_titles = soup.find_all(
@@ -41,21 +42,30 @@ for s in song_titles:
     top_100_songs.append(s.getText().replace('\n', '').replace('\t', ''))
 
 print(top_100_songs)
+top_10_songs = top_100_songs[:10]
 
 # Search On Youtube  ==================================================================
-yt_params = {
-    'part': "snippet",
-    'key': YT_KEY,
-    'type': 'video',
-    'q': top_100_songs[0],
-}
-yt_res = requests.get(
-    url=YT_search_endpoint,
-    params=yt_params
-)
+for song in top_10_songs:
+    yt_params = {
+        'part': "snippet",
+        'key': YT_KEY,
+        'type': 'video',
+        'q': song,
+    }
+    yt_res = requests.get(
+        url=YT_search_endpoint,
+        params=yt_params
+    )
 
-print(yt_res.json())
+    try:
+        playlist_data = yt_res.json()['items']
+        top_10_songs_video_id.append(playlist_data[0]['id']['videoId'])
+        print(f"{playlist_data[0]['id']['videoId']} appended")
+    except KeyError:
+        print(yt_res.text)
+        pass
 
+print(top_10_songs_video_id)
 # Add to Youtube Playlist ==================================================================
 flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
     client_secrets_file, scopes)
@@ -63,18 +73,19 @@ credentials = flow.run_console()
 youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
 
-request = youtube.playlistItems().insert(
-    part="snippet",
-    body={
-        "snippet": {
-            "playlistId": YT_PLAYLIST_ID,
-            "resourceId": {
-                "kind": "youtube#video",
-                "videoId": "fR2WFQRbP3g"
+for id in top_10_songs_video_id:
+    request = youtube.playlistItems().insert(
+        part="snippet",
+        body={
+            "snippet": {
+                "playlistId": YT_PLAYLIST_ID,
+                "resourceId": {
+                    "kind": "youtube#video",
+                    "videoId": id
+                }
             }
         }
-    }
-)
+    )
 
-response = request.execute()
-print(response)
+    response = request.execute()
+    print(f"{id} successfully added")
