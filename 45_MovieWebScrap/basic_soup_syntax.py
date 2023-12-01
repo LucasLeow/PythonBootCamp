@@ -16,8 +16,11 @@ print(soup.a)  # returns the first anchor tag
 print(soup.p)  # returns the first paragraph tag
 
 print(soup.find_all(name='a'))  # returns all anchor tags within HTML in a list
-print(soup.find(name="h1", id="name"))  # returns <h1 id="name">
-print(soup.find(name="h3", class_="heading"))  # returns <h3 class="heading">
+# get all span tags with class score
+print(soup.find_all(name='span', class_='score'))
+print(soup.find(name="h1", id="name"))  # returns first instance <h1 id="name">
+# returns first instance <h3 class="heading">
+print(soup.find(name="h3", class_="heading"))
 
 for tag in soup.find_all(name='a'):
     print(tag.string)  # get only content within anchor tag
