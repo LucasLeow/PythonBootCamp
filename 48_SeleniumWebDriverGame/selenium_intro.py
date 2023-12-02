@@ -15,7 +15,7 @@ price_dollar = driver.find_element(By.CLASS_NAME, "a-price-whole")
 price_cents = driver.find_element(By.CLASS_NAME, "a-price-fraction")
 print(f"The price is {price_dollar.text}.{price_cents.text}")
 
-# Other ways to get elements
+# Other ways to get single elements | If want multiple, use find_elements
 search_bar = driver.find_element(By.NAME, value="q") # input tags usually have 'name' attribute
 print(search_bar.get_attribute("placeholder"))
 
