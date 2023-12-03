@@ -43,14 +43,40 @@ class RentalPriceCollector:
             class_='StyledPropertyCardDataArea-anchor'
         )
         self.URL = [url['href'] for url in self.URL]
-        print(self.URL)
+
+        print(f'''
+        Successfully scraped data
+        Length of Price: {len(self.prices)}
+        Length of Address: {len(self.addresses)}
+        Length of URL: {len(self.URL)}
+''')
 
     def post_to_form(self):
         self.driver.get(self.form_URL)
 
+        for i in range(len(self.prices)):
+            time.sleep(3)
+            addr_input = self.driver.find_element(By.CSS_SELECTOR, value='div:nth-child(1) > div > div > div.AgroKb > div > div.aCsJod.oJeWuf > div > div.Xb9hP > input')
+            addr_input.send_keys(self.addresses[i])
+
+            price_input = self.driver.find_element(By.CSS_SELECTOR, value='div:nth-child(2) > div > div > div.AgroKb > div > div.aCsJod.oJeWuf > div > div.Xb9hP > input')
+            price_input.send_keys(self.prices[i])
+
+            url_input = self.driver.find_element(By.CSS_SELECTOR, value='div:nth-child(3) > div > div > div.AgroKb > div > div.aCsJod.oJeWuf > div > div.Xb9hP > input')
+            url_input.send_keys(self.URL[i])
+
+            submit_btn = self.driver.find_element(By.CSS_SELECTOR, value='div.RH5hzf.RLS9Fe > div > div.ThHDze > div.DE3NNc.CekdCb > div.lRwqcd > div')
+            submit_btn.click()
+
+            print(f'Successfully Submitted Data Row{i + 1}')
+
+            time.sleep(1)
+            another_resp = self.driver.find_element(By.CSS_SELECTOR, value='div.Uc2NEf > div:nth-child(2) > div.RH5hzf.RLS9Fe > div > div.c2gzEf > a')
+            another_resp.click()
 
 if __name__ == '__main__':
     collector = RentalPriceCollector()
     collector.get_rental_data()
+    collector.post_to_form()
 
 
