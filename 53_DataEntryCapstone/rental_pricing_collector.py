@@ -30,13 +30,13 @@ class RentalPriceCollector:
             name='span',
             class_='PropertyCardWrapper__StyledPriceLine'
         )
-        self.prices = [float(price.getText().replace('$', '').replace(',', '').replace('+/mo','').replace('/mo', '').replace('+ 1bd', '').replace('+ 1 bd','')) for price in self.prices]
+        self.prices = [float(price.getText().replace('/mo','').split('+')[0].replace('$', '').replace(',','')) for price in self.prices]
 
         self.addresses = soup.find_all(
             name='address',
             attrs={'data-test':'property-card-addr'}
         )
-        self.addresses = [addr.getText().replace('\n','').replace('\t', '').strip(' ') for addr in self.addresses]
+        self.addresses = [addr.getText().replace('\n','').replace('\t', '').replace(' | ', '').strip(' ') for addr in self.addresses]
 
         self.URL = soup.find_all(
             name='a',
@@ -49,7 +49,7 @@ class RentalPriceCollector:
         Length of Price: {len(self.prices)}
         Length of Address: {len(self.addresses)}
         Length of URL: {len(self.URL)}
-''')
+        ''')
 
     def post_to_form(self):
         self.driver.get(self.form_URL)
