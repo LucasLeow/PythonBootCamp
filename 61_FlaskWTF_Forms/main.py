@@ -5,6 +5,9 @@ from wtforms.validators import DataRequired, Length, Email
 # pip install email_validator (for Email validator)
 import os
 
+from flask_bootstrap import Bootstrap5
+
+
 secret_key = os.environ['secret_key']
 
 class LoginForm(FlaskForm):
@@ -34,6 +37,8 @@ This will install the packages from requirements.txt for this project.
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
 
+bootstrap = Bootstrap5(app)
+
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -42,11 +47,10 @@ def home():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit(): # To trigger validators for formfields (return True / False)
-        print(login_form.email.data) # to access 'email' field data
-        print(login_form.password.data)
-        return render_template('success.html')
-    else:
-        return render_template('denied.html')
+        if login_form.email.data == 'admin@email.com' and login_form.password.data == 'admin':
+            return render_template('success.html')
+        else:
+            return render_template('denied.html')
     # need to include novalidate in <form novalidate> to disable default html form validation
     return render_template('login.html', form=login_form)
 
