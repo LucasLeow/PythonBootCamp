@@ -41,7 +41,12 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
-    login_form.validate_on_submit() # To trigger validators for formfields
+    if login_form.validate_on_submit(): # To trigger validators for formfields (return True / False)
+        print(login_form.email.data) # to access 'email' field data
+        print(login_form.password.data)
+        return render_template('success.html')
+    else:
+        return render_template('denied.html')
     # need to include novalidate in <form novalidate> to disable default html form validation
     return render_template('login.html', form=login_form)
 
