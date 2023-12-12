@@ -10,6 +10,7 @@ from flask_bootstrap import Bootstrap5
 
 secret_key = os.environ['secret_key']
 
+
 class LoginForm(FlaskForm):
     # validators accept list of validator objects, eg DataRequired makes field Required
     email = StringField('email', validators=[
@@ -21,6 +22,8 @@ class LoginForm(FlaskForm):
         Length(min=8, message=('minimum 8 characters for password'))
     ])
     submit = SubmitField(label='Log In')
+
+
 '''
 Red underlines? Install the required packages first: 
 Open the Terminal in PyCharm (bottom left). 
@@ -39,20 +42,23 @@ app.config['SECRET_KEY'] = secret_key
 
 bootstrap = Bootstrap5(app)
 
+
 @app.route("/")
 def home():
     return render_template('index.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
-    if login_form.validate_on_submit(): # To trigger validators for formfields (return True / False)
+    if login_form.validate_on_submit():  # To trigger validators for formfields (return True / False)
         if login_form.email.data == 'admin@email.com' and login_form.password.data == 'admin':
             return render_template('success.html')
         else:
             return render_template('denied.html')
     # need to include novalidate in <form novalidate> to disable default html form validation
     return render_template('login.html', form=login_form)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

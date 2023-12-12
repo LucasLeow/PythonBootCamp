@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} </title>
-    {% block styling %}
-        {{ bootstrap.load_css() }}
-    {% endblock %}
+    {{ bootstrap.load_css() }}
 </head>
 <body>
     {% block content %}{% endblock %}
