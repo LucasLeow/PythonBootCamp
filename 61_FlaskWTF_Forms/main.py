@@ -1,14 +1,22 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length, Email
+# pip install email_validator (for Email validator)
 import os
 
 secret_key = os.environ['secret_key']
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
+    # validators accept list of validator objects, eg DataRequired makes field Required
+    email = StringField('email', validators=[
+        DataRequired(),
+        Email(message=('Not a valid email address'))
+    ])
+    password = PasswordField('password', validators=[
+        DataRequired(),
+        Length(min=8, message=('minimum 8 characters for password'))
+    ])
     submit = SubmitField(label='Log In')
 '''
 Red underlines? Install the required packages first: 
@@ -30,9 +38,12 @@ app.config['SECRET_KEY'] = secret_key
 def home():
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html', form=LoginForm())
+    login_form = LoginForm()
+    login_form.validate_on_submit() # To trigger validators for formfields
+    # need to include novalidate in <form novalidate> to disable default html form validation
+    return render_template('login.html', form=login_form)
 
 if __name__ == '__main__':
     app.run(debug=True)
