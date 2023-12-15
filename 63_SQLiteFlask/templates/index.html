@@ -6,10 +6,16 @@
   </head>
   <body>
     <h1>My Library</h1>
+    {% if books|length > 0 %}
     <ul>
-      <li></li>
+      {% for book in books %}
+      <li>{{ book['name'] }} - {{ book['author'] }} - {{ book['rating'] }}</li>
     </ul>
+    {% endfor %}
+    {% else %}
+    <p>Library is empty.</p>
+    {% endif %}
 
-    <a href="">Add New Book</a>
+    <a href="{{ url_for('add') }}">Add New Book</a>
   </body>
 </html>
