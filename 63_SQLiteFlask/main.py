@@ -55,6 +55,16 @@ def edit(book_id):
     else:
         return render_template('edit_rating.html', book=book_to_update)
 
+@app.route('/delete')
+def delete():
+    book_id = request.args.get('book_id')
+    book_to_delete = db.session.execute(
+        db.select(Book).where(Book.id == book_id)
+    ).scalar()
+    db.session.delete(book_to_delete)
+    db.session.commit()
+    return redirect(url_for('home'))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
 

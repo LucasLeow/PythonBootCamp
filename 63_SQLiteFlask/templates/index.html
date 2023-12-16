@@ -10,8 +10,9 @@
     <ul>
       {% for book in books %}
       <li>
+        <a href="{{ url_for('delete', book_id=book[0].id) }}">Delete</a>
         {{ book[0].title }} - {{ book[0].author }} - {{ book[0].rating }}
-        <a href=" {{ url_for('edit', book_id=book[0].id) }}">Edit Rating</a>
+        <a href="{{ url_for('edit', book_id=book[0].id) }}">Edit Rating</a>
       </li>
       {% endfor %}
     </ul>
