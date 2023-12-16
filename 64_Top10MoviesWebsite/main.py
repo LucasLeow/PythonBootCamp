@@ -7,7 +7,6 @@ from wtforms.validators import DataRequired
 import requests
 import os
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movie-collection.db"
 secret_key = os.environ['SECRET_KEY']
@@ -16,6 +15,7 @@ Bootstrap5(app)
 
 db = SQLAlchemy()
 db.init_app(app)
+
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,6 +26,19 @@ class Movie(db.Model):
     ranking = db.Column(db.Integer, unique=True, nullable=False)
     review = db.Column(db.String(150), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
+
+
+class RatingForm(FlaskForm):
+    rating = StringField(
+        label='Your rating out of 10. e.g. 7.5',
+        validators=[DataRequired()]
+    )
+    review = StringField(
+        label='Your Review',
+        validators=[DataRequired()]
+    )
+    submit = SubmitField(label='Done')
+
 
 # Create 1st instance for testing
 # with app.app_context():
@@ -52,5 +65,28 @@ def home():
     return render_template("index.html", movies=all_movies)
 
 
+@app.route("/edit/<int:movie_id>", methods=['GET', 'POST'])
+def edit_rating(movie_id):
+    edit_form = RatingForm()
+
+    if request.method == 'POST':  # POST form (form submit)
+        movie_to_update = db.session.execute(
+            db.select(Movie).where(Movie.id == movie_id)
+        ).scalar()
+
+        if edit_form.validate_on_submit():  # trigger validators for formfield
+            movie_to_update.rating = edit_form.rating.data
+            movie_to_update.review = edit_form.review.data
+
+            db.session.commit()
+            return redirect(url_for('home'))
+
+        else:
+            print('not validated')
+
+    else:  # GET form
+        return render_template("edit.html", form=edit_form)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
