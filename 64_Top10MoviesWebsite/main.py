@@ -87,6 +87,17 @@ def edit_rating(movie_id):
     else:  # GET form
         return render_template("edit.html", form=edit_form)
 
+@app.route('/delete')
+def delete_movie():
+    movie_id = request.args.get('movie_id')
+    movie_to_delete = db.session.execute(
+        db.select(Movie).where(Movie.id == movie_id)
+    ).scalar()
+
+    db.session.delete(movie_to_delete)
+    db.session.commit()
+
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
