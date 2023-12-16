@@ -8,23 +8,23 @@
   <p class="description">These are my all-time favourite movies.</p>
     {% for movie in movies %}
   <div class="card" >
-    <div class="front" style="background-image: url('{{ movie[0].img_url }}');">
-        <p class="large"> {{ movie[0].ranking }}</p>
+    <div class="front" style="background-image: url('{{ movie.img_url }}');">
+        <p class="large"> {{ movie.ranking }}</p>
     </div>
     <div class="back">
       <div>
-    <div class="title">{{ movie[0].title }}<span class="release_date">({{ movie[0].year }})</span></div>
+    <div class="title">{{ movie.title }}<span class="release_date">({{ movie.year }})</span></div>
         <div class="rating">
-            <label>{{ movie[0].rating }}</label>
+            <label>{{ movie.rating }}</label>
           <i class="fas fa-star star"></i>
         </div>
-          <p class="review">"{{ movie[0].review }}"</p>
+          <p class="review">"{{ movie.review }}"</p>
         <p class="overview">
-            {{ movie[0].description }}
+            {{ movie.description }}
         </p>
 
-        <a href="{{ url_for('edit_rating', movie_id=movie[0].id) }}" class="button">Update</a>
-        <a href="{{ url_for('delete_movie', movie_id=movie[0].id) }}" class="button delete-button">Delete</a>
+        <a href="{{ url_for('edit_rating', movie_id=movie.id) }}" class="button">Update</a>
+        <a href="{{ url_for('delete_movie', movie_id=movie.id) }}" class="button delete-button">Delete</a>
 
       </div>
     </div>

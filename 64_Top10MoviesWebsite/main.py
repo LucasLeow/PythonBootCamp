@@ -27,7 +27,7 @@ class Movie(db.Model):
     year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(150), nullable=False)
     rating = db.Column(db.Float, nullable=False)
-    ranking = db.Column(db.Integer, unique=True)
+    ranking = db.Column(db.Integer)
     review = db.Column(db.String(150), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
@@ -71,8 +71,15 @@ class AddForm(FlaskForm):
 @app.route("/")
 def home():
     all_movies = db.session.execute(
-        db.select(Movie).order_by(Movie.ranking.desc())
-    )
+        db.select(Movie).order_by(Movie.rating)
+    ).scalars().all()
+
+    max_rank = len(all_movies)
+    for movie in all_movies:
+        movie.ranking = max_rank
+        db.session.commit()
+        max_rank -= 1
+
     return render_template("index.html", movies=all_movies)
 
 @app.route("/add", methods=['GET', 'POST'])
