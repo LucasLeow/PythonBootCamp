@@ -24,55 +24,61 @@ with app.app_context(): # else, can run flaskapp, then run command in terminal
     db.create_all()
 
 # Create
-with app.app_context():
-    first_book = Book(
-        id = 1,
-        title = 'Harry Potter',
-        author = 'J.K. Rowling',
-        rating = '9.3'
-    )
+# with app.app_context():
+#     first_book = Book(
+#         title = 'Harry Potter 4',
+#         author = 'J.K. Rowling',
+#         rating = '9.3'
+#     )
+#
+#     db.session.add(first_book)
+#     db.session.commit()
 
-    db.session.add(first_book)
-    db.session.commit()
-
-
+#
 # Read all
+# with app.app_context():
+#     result = db.session.execute(
+#         db.select(Book).order_by(Book.title)
+#     )
+#     all_books = result.scalars() # get individual row from Result obj
+#     print(all_books.first().id)
+
+# Read all, alternate syntax
 with app.app_context():
     result = db.session.execute(
-        db.select(Book).order_by(Book.title)
-    )
-    all_books = result.scalars() # get individual row from Result obj
-
-# Read single
-with app.app_context():
-    book = db.session.execute(
-        db.select(Book).where(Book.id == 1)
+        db.select(Book)
     ).scalar()
-
-# Update record by query
-with app.app_context():
-    book_to_update = db.session.execute(
-        db.select(Book).where(Book.title == 'Harry Potter')
-    ).scalar()
-    book_to_update.title = 'Harry Potter and Philosopher Stone'
-    db.session.commit()
-
-# Update by Primary Key
-book_id = 1
-with app.app_context():
-    book_to_update = db.session.execute(
-        db.select(Book).where(Book.id == book_id)
-    ).scalar()
-    # or book_to_update = db.get_or_404(Book, book_id)
-    book_to_update.title = "Harry Potter and the Goblet of Fire"
-    db.session.commit()
-
-# Delete
-book_id = 1
-with app.app_context():
-    book_to_delete = db.session.execute(
-        db.select(Book).where(Book.id == book_id)
-    ).scalar()
-    # or book_to_delete = db.get_or_404(Book, book_id)
-    db.session.delete(book_to_delete)
-    db.session.commit()
+    print(result.id)
+# # Read single
+# with app.app_context():
+#     book = db.session.execute(
+#         db.select(Book).where(Book.id == 1)
+#     ).scalar()
+#
+# # Update record by query
+# with app.app_context():
+#     book_to_update = db.session.execute(
+#         db.select(Book).where(Book.title == 'Harry Potter')
+#     ).scalar()
+#     book_to_update.title = 'Harry Potter and Philosopher Stone'
+#     db.session.commit()
+#
+# # Update by Primary Key
+# book_id = 1
+# with app.app_context():
+#     book_to_update = db.session.execute(
+#         db.select(Book).where(Book.id == book_id)
+#     ).scalar()
+#     # or book_to_update = db.get_or_404(Book, book_id)
+#     book_to_update.title = "Harry Potter and the Goblet of Fire"
+#     db.session.commit()
+#
+# # Delete
+# book_id = 1
+# with app.app_context():
+#     book_to_delete = db.session.execute(
+#         db.select(Book).where(Book.id == book_id)
+#     ).scalar()
+#     # or book_to_delete = db.get_or_404(Book, book_id)
+#     db.session.delete(book_to_delete)
+#     db.session.commit()
