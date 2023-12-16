@@ -7,9 +7,13 @@ from wtforms.validators import DataRequired
 import requests
 import os
 
+secret_key = os.environ['SECRET_KEY']
+bearer_token = os.environ['BEARER']
+moviedb_url = "https://api.themoviedb.org/3/search/movie"
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movie-collection.db"
-secret_key = os.environ['SECRET_KEY']
+
 app.config['SECRET_KEY'] = secret_key
 Bootstrap5(app)
 
@@ -23,7 +27,7 @@ class Movie(db.Model):
     year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(150), nullable=False)
     rating = db.Column(db.Float, nullable=False)
-    ranking = db.Column(db.Integer, unique=True, nullable=False)
+    ranking = db.Column(db.Integer, unique=True)
     review = db.Column(db.String(150), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
@@ -39,8 +43,15 @@ class RatingForm(FlaskForm):
     )
     submit = SubmitField(label='Done')
 
+class AddForm(FlaskForm):
+    title = StringField(
+        label='Movie Title',
+        validators=[DataRequired()]
+    )
+    submit = SubmitField(label='Add Movie')
 
-# Create 1st instance for testing
+
+# Run this code to generate db instance (on first run)
 # with app.app_context():
 #     db.create_all()
 
@@ -64,11 +75,71 @@ def home():
     )
     return render_template("index.html", movies=all_movies)
 
+@app.route("/add", methods=['GET', 'POST'])
+def add_movie():
+    add_form = AddForm()
+    if request.method == 'POST': # POST form (form submit)
+        if add_form.validate_on_submit():
+            movie_title = add_form.title.data
+
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Bearer {bearer_token}"
+            }
+
+            movie_params = {
+                'query': movie_title,
+                'include_adult': False,
+                'language': 'en-US',
+                'page': 1
+            }
+
+            response = requests.get(
+                moviedb_url,
+                headers=headers,
+                params=movie_params
+            )
+
+            all_movies = response.json()['results']
+
+            return render_template('select.html', movies=all_movies)
+        else:
+            print('add form not validated')
+
+    else: # GET form
+        return render_template('add.html', form=add_form)
+
+@app.route('/<int:movie_id>')
+def movie_details(movie_id):
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?language=en-US"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {bearer_token}"
+    }
+
+    movie_data = requests.get(url, headers=headers).json()
+    new_movie = Movie(
+        title = movie_data['original_title'],
+        year = movie_data['release_date'][:4],
+        description = movie_data['overview'],
+        rating = movie_data['vote_average'],
+        ranking = None,
+        review = "",
+        img_url = f"https://image.tmdb.org/t/p/w500{movie_data['poster_path']}"
+    )
+    db.session.add(new_movie)
+    db.session.commit()
+
+    desired_movie = db.session.execute(
+        db.select(Movie).where(Movie.title == movie_data['original_title'])
+    ).scalar()
+
+    return redirect(url_for('edit_rating', movie_id=desired_movie.id))
 
 @app.route("/edit/<int:movie_id>", methods=['GET', 'POST'])
 def edit_rating(movie_id):
     edit_form = RatingForm()
-
     if request.method == 'POST':  # POST form (form submit)
         movie_to_update = db.session.execute(
             db.select(Movie).where(Movie.id == movie_id)
@@ -82,7 +153,7 @@ def edit_rating(movie_id):
             return redirect(url_for('home'))
 
         else:
-            print('not validated')
+            print('edit form not validated')
 
     else:  # GET form
         return render_template("edit.html", form=edit_form)
