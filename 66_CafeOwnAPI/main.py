@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import random
+import os
 
+TOP_SECRET_API_KEY = os.environ['TOP_SECRET_API_KEY']
 app = Flask(__name__)
 
 # Connect to Database
@@ -105,17 +107,35 @@ def update_coffee_price(cafe_id):
         db.session.commit()
         return jsonify(response={
             "success": "Successfully updated coffee price"
-        })
+        }), 200
     else:
         return jsonify(
             response={
                 "not found": "Sorry, a cafe with that id was not found in the database"
             }
-        )
+        ), 404
 
 
 # HTTP DELETE - Delete Record
-
+@app.route('/report-closed/<int:cafe_id>', methods=['DELETE'])
+def delete_cafe(cafe_id):
+    api_key = request.args.get('api-key')
+    if api_key == TOP_SECRET_API_KEY:
+        cafe = db.get_or_404(Cafe, cafe_id)
+        if cafe:
+            db.session.delete(cafe)
+            db.session.commit()
+            return jsonify(
+                response={"success":"Successfully deleted cafe from database"}
+            ), 200
+        else:
+            return jsonify(
+                error={"Not found": "Sorry, a cafe with that id was not found in the database"}
+            ), 404
+    else:
+        return jsonify(
+            error={"Forbidden":"Sorry, that's not allowed. Make sure you have the correct API Key"}
+        ), 403
 
 if __name__ == '__main__':
     app.run(debug=True)
