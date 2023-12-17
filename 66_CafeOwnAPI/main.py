@@ -1,18 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-
-'''
-Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
+import random
 
 app = Flask(__name__)
 
@@ -36,9 +24,16 @@ class Cafe(db.Model):
     can_take_calls = db.Column(db.Boolean, nullable=False)
     coffee_price = db.Column(db.String(250), nullable=True)
 
+    def to_dict(self):
+        dict = {}
+        for col in self.__table__.columns:
+            dict[col.name] = getattr(self, col.name)
 
-with app.app_context():
-    db.create_all()
+        return dict
+
+
+# with app.app_context():
+#     db.create_all()
 
 
 @app.route("/")
@@ -47,6 +42,24 @@ def home():
 
 
 # HTTP GET - Read Record
+@app.route('/random')
+def get_random_cafe():
+    result = db.session.execute(
+        db.select(Cafe)
+    ).scalars().all()
+
+    random_cafe = random.choice(result)
+    return jsonify(cafe=random_cafe.to_dict())
+
+@app.route('/all')
+def get_all_cafe():
+    result = db.session.execute(
+        db.select(Cafe)
+    ).scalars().all()
+
+    all_cafe_data = [cafe.to_dict() for cafe in result]
+    return jsonify(cafes=all_cafe_data)
+
 
 # HTTP POST - Create Record
 
