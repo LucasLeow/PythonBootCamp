@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, jsonify, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -36,8 +36,8 @@ class BlogForm(FlaskForm):
     title = StringField('Blog Post Title', validators=[DataRequired()])
     subtitle = StringField('Subtitle', validators=[DataRequired()])
     author = StringField('Your Name', validators=[DataRequired()])
-    img_url = StringField('Blog Image URL', validators=[])
-    content = CKEditorField('Blog Content', validators=[])
+    img_url = StringField('Blog Image URL', validators=[URL()])
+    content = CKEditorField('Blog Content', validators=[DataRequired()])
 
     submit = SubmitField('SUBMIT POST')
 
@@ -46,7 +46,7 @@ class BlogForm(FlaskForm):
 
 
 @app.route('/')
-def get_all_posts():
+def home():
     posts = db.session.execute(
         db.select(BlogPost)
     ).scalars().all()
@@ -72,10 +72,25 @@ def create_new_blog():
     form = BlogForm()
     if request.method == 'POST': # Form Submit
         if form.validate_on_submit(): # Form validated
-            print('Form validated')
-            print(form.title.data)
+            new_blog = BlogPost(
+                title = form.title.data,
+                subtitle = form.subtitle.data,
+                date = date.today().strftime('%B %d, %Y'),
+                body = form.content.data,
+                author = form.author.data,
+                img_url = form.img_url.data
+            )
+            db.session.add(new_blog)
+            db.session.commit()
+
+            return redirect(url_for('home'))
         else:
-            print('Form not validated')
+            return jsonify(
+                response={
+                    "form not validated": "Form not validated"
+                }
+            ), 400
+
     else: # GET form webpage
         return render_template('make-post.html', form=form)
 
