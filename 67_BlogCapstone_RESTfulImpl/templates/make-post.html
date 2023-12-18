@@ -25,6 +25,8 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <!-- TODO:-Add CKEditor and render the form here -->
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='content') }}
         {{ render_form(form) }}
       </div>
     </div>

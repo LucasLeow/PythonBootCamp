@@ -9,8 +9,11 @@ from datetime import date
 import os
 
 SECRET_KEY = os.environ['SECRET_KEY']
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
+
+ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # CONNECT TO DB
@@ -34,7 +37,7 @@ class BlogForm(FlaskForm):
     subtitle = StringField('Subtitle', validators=[DataRequired()])
     author = StringField('Your Name', validators=[DataRequired()])
     img_url = StringField('Blog Image URL', validators=[])
-    content = StringField('Blog Content', validators=[])
+    content = CKEditorField('Blog Content', validators=[])
 
     submit = SubmitField('SUBMIT POST')
 

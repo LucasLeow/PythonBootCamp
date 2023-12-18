@@ -14,9 +14,10 @@ class BlogForm(FlaskForm):
     subtitle = StringField('Subtitle', validators=[DataRequired()])
     author = StringField('Your Name', validators=[DataRequired()])
     img_url = StringField('Blog Image URL', validators=[])
-    content = StringField('Blog Content', validators=[])
+    content = CKEditorField('Blog Content', validators=[])
 
     submit = SubmitField('SUBMIT POST')
+
 ```
 
 ## Step 2: Create form instance inside route fn
@@ -35,6 +36,7 @@ def create_new_blog():
 ```
 
 ## Step 3: Include link to form function
+>index.html
 ```
         <a
           class="btn btn-primary float-right"
@@ -44,3 +46,23 @@ def create_new_blog():
 ```
 
 ## Step 4: Edit Form HTML to render form
+> make-post.html
+```
+{% block content %} {% include "header.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+<!-- Page Header -->
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/edit-bg.jpg')"
+>
+.
+.
+.
+
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <!-- TODO:-Add CKEditor and render the form here -->
+            {{ ckeditor.load() }}
+            {{ ckeditor.config(name='content') }}
+            {{ render_form(form) }}
+      </div>
+```
