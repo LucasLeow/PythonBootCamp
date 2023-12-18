@@ -6,22 +6,11 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditor, CKEditorField
 from datetime import date
+import os
 
-'''
-Make sure the required packages are installed: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from the requirements.txt for this project.
-'''
-
+SECRET_KEY = os.environ['SECRET_KEY']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = SECRET_KEY
 Bootstrap5(app)
 
 # CONNECT TO DB
@@ -47,17 +36,24 @@ with app.app_context():
 
 @app.route('/')
 def get_all_posts():
-    # TODO: Query the database for all the posts. Convert the data to a python list.
-    posts = []
+    posts = db.session.execute(
+        db.select(BlogPost)
+    ).scalars().all()
+
     return render_template("index.html", all_posts=posts)
 
 # TODO: Add a route so that you can click on individual posts.
-@app.route('/')
-def show_post(post_id):
-    # TODO: Retrieve a BlogPost from the database based on the post_id
-    requested_post = "Grab the post from your database"
-    return render_template("post.html", post=requested_post)
-
+@app.route('/blog/<int:blog_id>')
+def show_post(blog_id):
+    blog = db.get_or_404(BlogPost, blog_id)
+    if blog:
+        return render_template('post.html', post=blog)
+    else:
+        return jsonify(
+            response={
+                "not found": "Sorry, a blog with that id was not found in the database"
+            }
+        ), 404
 
 # TODO: add_new_post() to create a new blog post
 
