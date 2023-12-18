@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -29,9 +29,17 @@ class BlogPost(db.Model):
     author = db.Column(db.String(250), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
+class BlogForm(FlaskForm):
+    title = StringField('Blog Post Title', validators=[DataRequired()])
+    subtitle = StringField('Subtitle', validators=[DataRequired()])
+    author = StringField('Your Name', validators=[DataRequired()])
+    img_url = StringField('Blog Image URL', validators=[])
+    content = StringField('Blog Content', validators=[])
 
-with app.app_context():
-    db.create_all()
+    submit = SubmitField('SUBMIT POST')
+
+# with app.app_context():
+#     db.create_all()
 
 
 @app.route('/')
@@ -56,6 +64,17 @@ def show_post(blog_id):
         ), 404
 
 # TODO: add_new_post() to create a new blog post
+@app.route('/new-post', methods=['GET', 'POST'])
+def create_new_blog():
+    form = BlogForm()
+    if request.method == 'POST': # Form Submit
+        if form.validate_on_submit(): # Form validated
+            print('Form validated')
+            print(form.title.data)
+        else:
+            print('Form not validated')
+    else: # GET form webpage
+        return render_template('make-post.html', form=form)
 
 # TODO: edit_post() to change an existing blog post
 
