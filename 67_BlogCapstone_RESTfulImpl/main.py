@@ -37,7 +37,7 @@ class BlogForm(FlaskForm):
     subtitle = StringField('Subtitle', validators=[DataRequired()])
     author = StringField('Your Name', validators=[DataRequired()])
     img_url = StringField('Blog Image URL', validators=[URL()])
-    content = CKEditorField('Blog Content', validators=[DataRequired()])
+    body = CKEditorField('Blog Content', validators=[DataRequired()])
 
     submit = SubmitField('SUBMIT POST')
 
@@ -66,17 +66,18 @@ def show_post(blog_id):
             }
         ), 404
 
+
 # TODO: add_new_post() to create a new blog post
 @app.route('/new-post', methods=['GET', 'POST'])
 def create_new_blog():
     form = BlogForm()
-    if request.method == 'POST': # Form Submit
-        if form.validate_on_submit(): # Form validated
+    if request.method == 'POST': # Create Form Submit
+        if form.validate_on_submit(): # Create Form validated
             new_blog = BlogPost(
                 title = form.title.data,
                 subtitle = form.subtitle.data,
                 date = date.today().strftime('%B %d, %Y'),
-                body = form.content.data,
+                body = form.body.data,
                 author = form.author.data,
                 img_url = form.img_url.data
             )
@@ -92,9 +93,39 @@ def create_new_blog():
             ), 400
 
     else: # GET form webpage
-        return render_template('make-post.html', form=form)
+        return render_template('make-post.html', form=form, new_post=True)
 
 # TODO: edit_post() to change an existing blog post
+@app.route('/edit-post/<int:post_id>', methods=['GET', 'POST'])
+def edit_post(post_id):
+    blog = db.get_or_404(BlogPost, post_id)
+    if blog:
+        form = BlogForm(obj=blog)
+        if request.method == 'POST': # edit form submitted
+            if form.validate_on_submit(): # edit form validated
+                blog.title = form.title.data
+                blog.subtitle = form.subtitle.data
+                blog.body = form.body.data
+                blog.author = form.author.data
+                blog.img_url = form.img_url.data
+
+                db.session.commit()
+                return redirect(url_for('show_post', blog_id=blog.id))
+
+            else:
+                return jsonify(
+                    response={
+                        "form not validated": "Form not validated"
+                    }
+                ), 400
+        else: # GET edit form
+            return render_template("make-post.html", form=form, new_post=None)
+    else: # blog not found
+        return jsonify(
+            response={
+                "not found": "the blog with the given id was not found"
+            }
+        ), 404
 
 # TODO: delete_post() to remove a blog post from the database
 
