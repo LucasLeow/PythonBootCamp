@@ -128,6 +128,21 @@ def edit_post(post_id):
         ), 404
 
 # TODO: delete_post() to remove a blog post from the database
+@app.route('/delete/<int:post_id>')
+def delete_post(post_id):
+    blog = db.get_or_404(BlogPost, post_id)
+    if blog:
+        db.session.delete(blog)
+        db.session.commit()
+
+    else:
+        return jsonify(
+            response={
+                "not found": "the blog with the given id was not found"
+            }
+        ), 404
+
+    return redirect(url_for('home'))
 
 # Below is the code from previous lessons. No changes needed.
 @app.route("/about")
