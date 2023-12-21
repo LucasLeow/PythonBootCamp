@@ -32,10 +32,16 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST': # Register form submit
+        user_password = request.form.get('password')
+        hash_password = generate_password_hash(
+            password=user_password,
+            method='pbkdf2',
+            salt_length=8
+        )
         new_user = User(
             email = request.form.get('email'),
             name = request.form.get('name'),
-            password = request.form.get('password')
+            password = hash_password
         )
 
         db.session.add(new_user)
