@@ -1,20 +1,25 @@
 {% extends "base.html" %} {% block content %}
 
-<div class="box">
-  <h1>Login</h1>
-  <!-- TODO: Use Message Flashing to display feedback to the user with a <p> -->
-  <form action="{{ url_for('login') }}" method="post">
-    <input type="text" name="email" placeholder="Email" required="required" />
-    <input
-      type="password"
-      name="password"
-      placeholder="Password"
-      required="required"
-    />
-    <button type="submit" class="btn btn-primary btn-block btn-large">
-      Let me in.
-    </button>
-  </form>
-</div>
+{% with message = get_flashed_messages()[0] %}
+  <div class="box">
+    <h1>Login</h1>
+    {% if message %}
+    <p> {{ message }}</p>
+    {% endif %}
+    <!-- TODO: Use Message Flashing to display feedback to the user with a <p> -->
+    <form action="{{ url_for('login') }}" method="post">
+      <input type="text" name="email" placeholder="Email" required="required" />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required="required"
+      />
+      <button type="submit" class="btn btn-primary btn-block btn-large">
+        Let me in.
+      </button>
+    </form>
+  </div>
+{% endwith %}
 
 {% endblock %}
