@@ -9,16 +9,22 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
 # Import your forms from the forms.py
-from forms import CreatePostForm, RegisterForm
+from forms import CreatePostForm, RegisterForm, LoginForm
+import os
 
-
+SECRET_KEY = os.environ['SECRET_KEY']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = SECRET_KEY
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # TODO: Configure Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
@@ -40,6 +46,7 @@ class BlogPost(db.Model):
 
 # TODO: Create a User table for all your registered users. 
 class User(UserMixin, db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
@@ -58,7 +65,7 @@ def register():
             email = reg_form.email.data
             user = db.session.execute(
                 db.select(User).where(User.email == email)
-            )
+            ).scalar()
 
             if user:
                 flash('Email already registered. Login Instead')
@@ -76,6 +83,12 @@ def register():
                 )
                 db.session.add(new_user)
                 db.session.commit()
+
+                # Login user after registration & adding details to db
+                login_user(new_user)
+
+                return redirect(url_for('get_all_posts'))
+
         else:
             print('Form not validated') # flash message here later
 
@@ -83,9 +96,29 @@ def register():
 
 
 # TODO: Retrieve a user from the database based on their email. 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    login_form = LoginForm()
+    if request.method == 'POST':
+        email = login_form.email.data
+        password = login_form.password.data
+
+        user = db.session.execute(
+            db.select(User).where(User.email == email)
+        ).scalar()
+
+        if not user:
+            flash('That email does not exist. Please try again.')
+            return redirect(url_for('login'))
+
+        if check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('get_all_posts'))
+        else:
+            flash('Incorrect password. Please try again.')
+            return redirect(url_for('login'))
+
+    return render_template("login.html", form=login_form)
 
 
 @app.route('/logout')
