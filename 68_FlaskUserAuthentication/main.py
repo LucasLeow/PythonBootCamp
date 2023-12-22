@@ -24,7 +24,7 @@ def load_user(user_id):
 
 
 # CREATE TABLE IN DB
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
@@ -37,7 +37,7 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("index.html", logged_in=current_user.is_authenticated)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -71,7 +71,7 @@ def register():
 
         return redirect(url_for('secrets'))
 
-    return render_template("register.html")
+    return render_template("register.html", logged_in=current_user.is_authenticated)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -97,13 +97,13 @@ def login():
             return redirect(url_for('login'))
 
     else:  # GET Login page
-        return render_template("login.html")
+        return render_template("login.html", logged_in=current_user.is_authenticated)
 
 
 @app.route('/secrets')
 @login_required
 def secrets():
-    return render_template("secrets.html", name=current_user.name)  # current_user is keyword used by flask-login
+    return render_template("secrets.html", name=current_user.name, logged_in=True)  # current_user is keyword used by flask-login
 
 
 @app.route('/logout')
