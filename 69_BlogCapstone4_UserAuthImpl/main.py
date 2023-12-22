@@ -92,7 +92,7 @@ def register():
         else:
             print('Form not validated') # flash message here later
 
-    return render_template("register.html", form=reg_form)
+    return render_template("register.html", form=reg_form, logged_in=current_user.is_authenticated)
 
 
 # TODO: Retrieve a user from the database based on their email. 
@@ -118,11 +118,12 @@ def login():
             flash('Incorrect password. Please try again.')
             return redirect(url_for('login'))
 
-    return render_template("login.html", form=login_form)
+    return render_template("login.html", form=login_form, logged_in=current_user.is_authenticated)
 
 
 @app.route('/logout')
 def logout():
+    logout_user()
     return redirect(url_for('get_all_posts'))
 
 
@@ -130,14 +131,14 @@ def logout():
 def get_all_posts():
     result = db.session.execute(db.select(BlogPost))
     posts = result.scalars().all()
-    return render_template("index.html", all_posts=posts)
+    return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated)
 
 
 # TODO: Allow logged-in users to comment on posts
 @app.route("/post/<int:post_id>")
 def show_post(post_id):
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post)
+    return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated)
 
 
 # TODO: Use a decorator so only an admin user can create a new post
@@ -156,7 +157,7 @@ def add_new_post():
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("get_all_posts"))
-    return render_template("make-post.html", form=form)
+    return render_template("make-post.html", form=form, logged_in=current_user.is_authenticated)
 
 
 # TODO: Use a decorator so only an admin user can edit a post
@@ -178,7 +179,7 @@ def edit_post(post_id):
         post.body = edit_form.body.data
         db.session.commit()
         return redirect(url_for("show_post", post_id=post.id))
-    return render_template("make-post.html", form=edit_form, is_edit=True)
+    return render_template("make-post.html", form=edit_form, is_edit=True, logged_in=current_user.is_authenticated)
 
 
 # TODO: Use a decorator so only an admin user can delete a post
@@ -192,12 +193,12 @@ def delete_post(post_id):
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return render_template("about.html", logged_in=current_user.is_authenticated)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    return render_template("contact.html", logged_in=current_user.is_authenticated)
 
 
 if __name__ == "__main__":
