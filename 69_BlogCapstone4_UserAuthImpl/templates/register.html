@@ -1,5 +1,6 @@
-{% from "bootstrap5/form.html" import render_form %} {% block content %} {%
-include "header.html" %}
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}
+{%include "header.html" %}
 
 <!-- Page Header -->
 <header
@@ -23,6 +24,7 @@ include "header.html" %}
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <!--TODO: render your registration form here-->
+        {{ render_form(form) }}
       </div>
     </div>
   </div>

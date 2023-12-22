@@ -1,5 +1,5 @@
 from datetime import date
-from flask import Flask, abort, render_template, redirect, url_for, flash
+from flask import Flask, abort, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_gravatar import Gravatar
@@ -9,21 +9,8 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
 # Import your forms from the forms.py
-from forms import CreatePostForm
+from forms import CreatePostForm, RegisterForm
 
-
-'''
-Make sure the required packages are installed: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from the requirements.txt for this project.
-'''
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -52,16 +39,47 @@ class BlogPost(db.Model):
 
 
 # TODO: Create a User table for all your registered users. 
-
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    name = db.Column(db.String(1000))
 
 with app.app_context():
     db.create_all()
 
 
 # TODO: Use Werkzeug to hash the user's password when creating a new user.
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("register.html")
+    reg_form = RegisterForm()
+    if request.method == 'POST':
+        if reg_form.validate_on_submit():
+            email = reg_form.email.data
+            user = db.session.execute(
+                db.select(User).where(User.email == email)
+            )
+
+            if user:
+                flash('Email already registered. Login Instead')
+                return redirect(url_for('login'))
+
+            else:
+                new_user = User(
+                    email=email,
+                    name=reg_form.name.data,
+                    password=generate_password_hash(
+                        password=reg_form.password.data,
+                        method='pbkdf2',
+                        salt_length=8
+                    )
+                )
+                db.session.add(new_user)
+                db.session.commit()
+        else:
+            print('Form not validated') # flash message here later
+
+    return render_template("register.html", form=reg_form)
 
 
 # TODO: Retrieve a user from the database based on their email. 
