@@ -9,7 +9,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import relationship
 # Import your forms from the forms.py
-from forms import CreatePostForm, RegisterForm, LoginForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 import os
 
 from functools import wraps
@@ -49,22 +49,34 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
 
-    blog_posts = relationship("BlogPost", back_populates="author")
+    blog_posts = relationship("BlogPost", back_populates="author") # User make multiple BlogPost
+    comments = relationship("Comment", back_populates="comment_author") # User make multiple Comment
 
 # CONFIGURE TABLES
 class BlogPost(db.Model):
     __tablename__ = "blog_posts"
     id = db.Column(db.Integer, primary_key=True)
-
-    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    author = relationship("User", back_populates="blog_posts") # Author is a User obj
-
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
     date = db.Column(db.String(250), nullable=False)
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    author = relationship("User", back_populates="blog_posts") # stored as User obj
+
+    comments = relationship("Comment", back_populates="parent_post") # BlogPost have multiple Comment
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(1000), nullable=False)
+
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    comment_author = relationship("User", back_populates="comments") # stored as User Obj
+
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
+    parent_post = relationship("BlogPost", back_populates="comments") # stored as BlogPost obj
 
 
 with app.app_context():
@@ -123,8 +135,8 @@ def login():
         ).scalar()
 
         if not user:
-            flash('That email does not exist. Please try again.')
-            return redirect(url_for('login'))
+            flash('That email does not exist. Please register.')
+            return redirect(url_for('register'))
 
         if check_password_hash(user.password, password):
             login_user(user)
@@ -150,14 +162,30 @@ def get_all_posts():
 
 
 # TODO: Allow logged-in users to comment on posts
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def show_post(post_id):
     requested_post = db.get_or_404(BlogPost, post_id)
-    return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated)
+    comment_form = CommentForm()
+
+    if request.method == 'POST':
+        if comment_form.validate_on_submit():
+            if not current_user.is_authenticated:
+                flash("Please login / register to comment.")
+                return redirect(url_for('login'))
+
+            new_comment = Comment(
+                text=comment_form.text.data,
+                comment_author=current_user,
+                parent_post=requested_post
+            )
+
+            db.session.add(new_comment)
+            db.session.commit()
+
+    return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated, form=comment_form)
 
 
 # TODO: Use a decorator so only an admin user can create a new post
-
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():

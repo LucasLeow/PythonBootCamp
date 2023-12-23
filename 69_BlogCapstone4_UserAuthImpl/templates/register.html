@@ -19,15 +19,20 @@
   </div>
 </header>
 
+{% with message = get_flashed_messages()[0] %}
 <main class="mb-4">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <!--TODO: render your registration form here-->
+        {% if message %}
+          <p class="flash"> {{ message }}</p>
+        {% endif %}
         {{ render_form(form) }}
       </div>
     </div>
   </div>
 </main>
+{% endwith %}
 
 {% include "footer.html" %} {% endblock %}
