@@ -40,7 +40,7 @@ gravatar = Gravatar(app,
                     base_url=None)
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI', "sqlite:///posts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URI')
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -114,7 +114,8 @@ def register():
     if form.validate_on_submit():
 
         # Check if user email is already present in the database.
-        result = db.session.execute(db.select(User).where(User.email == form.email.data))
+        result = db.session.execute(
+            db.select(User).where(User.email == form.email.data))
         user = result.scalar()
         if user:
             # User already exists
@@ -144,7 +145,8 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         password = form.password.data
-        result = db.session.execute(db.select(User).where(User.email == form.email.data))
+        result = db.session.execute(
+            db.select(User).where(User.email == form.email.data))
         # Note, email in db is unique so will only have one result.
         user = result.scalar()
         # Email doesn't exist
